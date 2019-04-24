@@ -1,7 +1,8 @@
-package com.androidatelier.fillmyglass
+package com.androidatelier.fillmyglass.customview
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.androidatelier.fillmyglass.R
 
 class CustomViewActivity : AppCompatActivity() {
 
