@@ -11,6 +11,15 @@ import android.view.View
 class GlassView @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+  var percentage = 0f
+    set(value) {
+      field = when {
+          (value < 0) -> 0f
+          (value > 1) -> 1f
+          else -> value
+      }
+      invalidate()
+    }
 
   private val glassPath: Path by lazy {
     Path().apply {
@@ -33,7 +42,9 @@ class GlassView @JvmOverloads constructor(
   }
 
   override fun onDraw(canvas: Canvas?) {
-    canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), liquidPaint)
+    val top = (1 - percentage) * height.toFloat()
+    canvas?.drawRect(0f, top, width.toFloat(), height.toFloat(), liquidPaint)
     canvas?.drawPath(glassPath, glassPaint)
   }
+
 }
