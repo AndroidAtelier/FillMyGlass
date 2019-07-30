@@ -21,8 +21,8 @@ class GlassView @JvmOverloads constructor(
 
   private val glassPath: Path by lazy {
     Path().apply {
-      val cupTop = (0.05f * height.toFloat())/2f;
-      val cupBottom = (0.95f * height.toFloat() + height.toFloat())/2f
+      val cupTop = (OVAL_HEIGHT * height.toFloat())/2f;
+      val cupBottom = ((1- OVAL_HEIGHT) * height.toFloat() + height.toFloat())/2f
       moveTo(0f,cupTop)
       lineTo(0f, cupBottom)
       moveTo(width.toFloat(), cupBottom)
@@ -46,14 +46,14 @@ class GlassView @JvmOverloads constructor(
       left = 0f
       top = mStrokeWidth/2f
       right = width.toFloat()
-      bottom = 0.05f * height.toFloat()
+      bottom = OVAL_HEIGHT * height.toFloat()
     }
   }
 
   private val ovalBottom : RectF by lazy {
     RectF().apply {
       left = 0f
-      top = 0.95f * height.toFloat()
+      top = (1- OVAL_HEIGHT) * height.toFloat()
       right = width.toFloat()
       bottom = height.toFloat() - mStrokeWidth/2f
     }
@@ -61,13 +61,14 @@ class GlassView @JvmOverloads constructor(
 
   override fun onDraw(canvas: Canvas?) {
     val top = (1 - percentage) * height.toFloat()
-    val bottom = height.toFloat() * (1 + 0.95f)/2
-    if (percentage > 0f && percentage < 0.98f) {
+    val percentageBottom = 1 - OVAL_HEIGHT/2
+    val bottom = height.toFloat() * percentageBottom
+    if (percentage > 0f && percentage < percentageBottom) {
       canvas?.drawOval(ovalBottom, liquidPaint)
       canvas?.drawRect(0f, top, width.toFloat(), bottom, liquidPaint )
-    } else if ( percentage > 0.98f) {
+    } else if ( percentage > percentageBottom) {
       canvas?.drawOval(ovalBottom, liquidPaint)
-      val maxTop = (0.05f)/2 * height.toFloat();
+      val maxTop = OVAL_HEIGHT/2 * height.toFloat();
       canvas?.drawRect(0f, maxTop, width.toFloat(), bottom, liquidPaint )
       canvas?.drawOval(ovalTop, liquidPaint)
     }
@@ -75,6 +76,10 @@ class GlassView @JvmOverloads constructor(
     canvas?.drawPath(glassPath, glassPaint)
     canvas?.drawOval(ovalTop, glassPaint)
     canvas?.drawOval(ovalBottom, glassPaint)
+  }
+
+  companion object {
+    private const val OVAL_HEIGHT = 0.05f;
   }
 
 }
