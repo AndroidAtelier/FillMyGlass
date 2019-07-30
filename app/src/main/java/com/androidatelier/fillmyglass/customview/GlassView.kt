@@ -21,8 +21,8 @@ class GlassView @JvmOverloads constructor(
 
   private val glassPath: Path by lazy {
     Path().apply {
-      val cupTop = (OVAL_HEIGHT * height.toFloat())/2f;
-      val cupBottom = ((1- OVAL_HEIGHT) * height.toFloat() + height.toFloat())/2f
+      val cupTop = (PERCENTAGE_OVAL_HEIGHT * height.toFloat())/2f;
+      val cupBottom = ((1- PERCENTAGE_OVAL_HEIGHT) * height.toFloat() + height.toFloat())/2f
       moveTo(0f,cupTop)
       lineTo(0f, cupBottom)
       moveTo(width.toFloat(), cupBottom)
@@ -46,30 +46,29 @@ class GlassView @JvmOverloads constructor(
       left = 0f
       top = mStrokeWidth/2f
       right = width.toFloat()
-      bottom = OVAL_HEIGHT * height.toFloat()
+      bottom = PERCENTAGE_OVAL_HEIGHT * height.toFloat()
     }
   }
 
   private val ovalBottom : RectF by lazy {
     RectF().apply {
       left = 0f
-      top = (1- OVAL_HEIGHT) * height.toFloat()
+      top = (1- PERCENTAGE_OVAL_HEIGHT) * height.toFloat()
       right = width.toFloat()
       bottom = height.toFloat() - mStrokeWidth/2f
     }
   }
 
   override fun onDraw(canvas: Canvas?) {
-    val top = (1 - percentage) * height.toFloat()
-    val percentageBottom = 1 - OVAL_HEIGHT/2
-    val bottom = height.toFloat() * percentageBottom
-    if (percentage > 0f && percentage < percentageBottom) {
+    val top = (1 - percentage) * ( height.toFloat() - PERCENTAGE_OVAL_HEIGHT * height ) + PERCENTAGE_OVAL_HEIGHT/2 * height.toFloat()
+    val bottom =  height.toFloat() - PERCENTAGE_OVAL_HEIGHT/2 * height.toFloat()
+
+    canvas?.drawRect(0f, top, width.toFloat(), bottom, liquidPaint)
+    if (percentage > 0) {
       canvas?.drawOval(ovalBottom, liquidPaint)
-      canvas?.drawRect(0f, top, width.toFloat(), bottom, liquidPaint )
-    } else if ( percentage > percentageBottom) {
-      canvas?.drawOval(ovalBottom, liquidPaint)
-      val maxTop = OVAL_HEIGHT/2 * height.toFloat();
-      canvas?.drawRect(0f, maxTop, width.toFloat(), bottom, liquidPaint )
+    }
+
+    if (percentage == 1f) {
       canvas?.drawOval(ovalTop, liquidPaint)
     }
 
@@ -79,7 +78,7 @@ class GlassView @JvmOverloads constructor(
   }
 
   companion object {
-    private const val OVAL_HEIGHT = 0.05f;
+    private const val PERCENTAGE_OVAL_HEIGHT = 0.2f;
   }
 
 }
